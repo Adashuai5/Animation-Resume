@@ -1,3 +1,39 @@
+// 传入三个参数，第一个是已完成的页面，第二个是页面内容，第三个是回调函数
+function writeCode(prefix, code, fn) {
+    let domCode = document.querySelector('#code')
+    let n = 0
+    let id = setInterval(() => {
+        n += 1
+        // 也可以用 code.slice()
+        domCode.innerHTML = Prism.highlight(prefix + code.substring(0, n), Prism.languages.css)
+        styleTag.innerHTML = prefix + code.substring(0, n)
+        // 每次更新屏幕下拉,也可以 = 10000
+        domCode.scrollTop = domCode.scrollHeight
+        if (n >= code.length) {
+            window.clearInterval(id)
+            // call一下
+            fn.call()
+        }
+    }, 1)
+}
+
+function writeMarkdown(markdown,fn) {
+    let domPaper = document.querySelector('#paper > .content')
+    let n = 0
+    let id = setInterval(() => {
+        n += 1
+        // 也可以用 code.slice()
+        domPaper.innerHTML = markdown.substring(0, n)
+        // 每次更新屏幕下拉,也可以 = 10000
+        domPaper.scrollTop = domPaper.scrollHeight
+        if (n >= markdown.length) {
+            window.clearInterval(id)
+            // call一下
+            fn.call()
+        }
+    }, 1)
+}
+
 var result = `/* 
 * 面试官你好，我是周元达
 * 我将以动画的形式来介绍我自己
@@ -38,43 +74,74 @@ html {
 }
 
 /* 好了下面我正式开始介绍我自己 */
+/* 我需要一张白纸 */
+#code {
+    position: fixed;
+    left: 0;
+    width: 50%;
+    height: 100%;
+}
+#paper {
+    position: fixed;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: rgb(222,222,222);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+#paper > .content{
+    width: 100%;
+    height: 100%;
+    background: white;
+}
 `
-var n = 0
-var id = setInterval(() => {
-    n += 1
-    // 也可以用 result.slice()
-    code.innerHTML = result.substring(0, n)
-    code.innerHTML = Prism.highlight(code.innerHTML, Prism.languages.css, 'css')
-    styleTag.innerHTML = result.substring(0, n)
-    if (n >= result.length) {
-        window.clearInterval(id)
-        fn2()
-        fn3(result)
-    }
-}, 10)
+var result2 = `
+#paper {
+}
+`
+var md = `
+# 自我介绍
 
-var fn2 = function () {
+我叫 xxx
+1996 年 4 月 出生
+XXX 学校毕业
+自学前端半年
+希望应聘贵公司前端开发岗位
+
+# 技能
+
+熟悉 JavaScript CSS3 HTML5 ...
+
+# 项目介绍
+
+1.
+2.
+3.
+
+# 联系方式
+
+手机：xxxxxx
+微信：xxxx
+Email：xxxx
+`
+// 开始完成页面为空，异步完成后执行创建页面，然后继续新的页面，回调再回调
+writeCode('', result, () => { // call me back
+    createPaper(() => {
+        writeCode(result, result2,()=>{
+            writeMarkdown(md)
+        })
+    })
+})
+
+function createPaper(fn) {
     var paper = document.createElement('div')
     paper.id = 'paper'
+    var content = document.createElement('pre')
+    content.className = 'content'
+    paper.appendChild(content)
     document.body.appendChild(paper)
-}
-
-var fn3 = function (preResult) {
-    var result = `
-#paper {
-    width: 100px;
-    height: 100px;
-    background: red;
-}
-    `
-    var n = 0
-    var id = setInterval(() => {
-        n += 1
-        code.innerHTML = preResult + result.substring(0, n)
-        code.innerHTML = Prism.highlight(code.innerHTML, Prism.languages.css, 'css')
-        styleTag.innerHTML = preResult + result.substring(0, n)
-        if (n >= result.length) {
-            window.clearInterval(id)
-        }
-    }, 10)
+    fn.call()
 }

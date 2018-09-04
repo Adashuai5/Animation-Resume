@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
 .token.selector {
     color: #000;
 }
@@ -12,4 +18,13 @@
 
 .token.punctuation {
     color: #000;
+}
+
+#code {
+    height: 100vh;
+    overflow: hidden;
+}
+
+#paper > pre{
+    padding: 16px;
 }
