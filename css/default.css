@@ -22,9 +22,9 @@
 
 #code {
     height: 100vh;
-    overflow: hidden;
+    overflow: auto;
 }
 
 #paper > pre{
-    padding: 16px;
+    padding-left: 16px;
 }

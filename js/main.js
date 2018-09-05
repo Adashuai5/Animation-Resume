@@ -14,10 +14,10 @@ function writeCode(prefix, code, fn) {
             // call一下
             fn.call()
         }
-    }, 1)
+    }, 10)
 }
 
-function writeMarkdown(markdown,fn) {
+function writeMarkdown(markdown, fn) {
     let domPaper = document.querySelector('#paper > .content')
     let n = 0
     let id = setInterval(() => {
@@ -102,18 +102,32 @@ var result2 = `
 #paper {
 }
 `
+var result3 = `
+/* 
+* 接下来把 markdown 变成 html 
+*/
+/*
+* 接下来给 html 加个样式吧
+*/
+
+`
+
 var md = `
 # 自我介绍
 
-我叫 xxx
+我叫 周元达
 1996 年 4 月 出生
-XXX 学校毕业
+XXXX 毕业 本科
 自学前端半年
 希望应聘贵公司前端开发岗位
+
+---
 
 # 技能
 
 熟悉 JavaScript CSS3 HTML5 ...
+
+---
 
 # 项目介绍
 
@@ -121,20 +135,29 @@ XXX 学校毕业
 2.
 3.
 
+---
+
 # 联系方式
 
 手机：xxxxxx
 微信：xxxx
 Email：xxxx
 `
+
+
 // 开始完成页面为空，异步完成后执行创建页面，然后继续新的页面，回调再回调
 writeCode('', result, () => { // call me back
     createPaper(() => {
-        writeCode(result, result2,()=>{
-            writeMarkdown(md)
+        writeCode(result, result2, () => {
+            writeMarkdown(md, () => {
+                writeCode(result + result2, result3, () => {
+                    markdownToHtml(md)
+                })
+            })
         })
     })
 })
+
 
 function createPaper(fn) {
     var paper = document.createElement('div')
@@ -143,5 +166,11 @@ function createPaper(fn) {
     content.className = 'content'
     paper.appendChild(content)
     document.body.appendChild(paper)
+    fn.call()
+}
+
+function markdownToHtml(markdown, fn) {
+    let domPaper = document.querySelector('#paper > .content')
+    domPaper.innerHTML = marked(markdown)
     fn.call()
 }
