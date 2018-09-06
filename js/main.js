@@ -12,7 +12,7 @@ function writeCode(prefix, code, fn) {
         if (n >= code.length) {
             window.clearInterval(id)
             // call一下
-            fn.call()
+            fn&&fn.call()
         }
     }, 10)
 }
@@ -29,7 +29,7 @@ function writeMarkdown(markdown, fn) {
         if (n >= markdown.length) {
             window.clearInterval(id)
             // call一下
-            fn.call()
+            fn&&fn.call()
         }
     }, 1)
 }
@@ -45,58 +45,56 @@ var result = `/*
 *{
     transition: all 1s;
 }
-html {
-    background: rgb(222,222,222);
+body {
+    background: linear-gradient(to left,white, blue, white);
 }
 #code {
-    border: 1px solid blue;
-    padding: 16px;
+    padding: 24px;
 }
 
 /* 这样太单调了，我们让代码高亮一下 */
 
-.token.selector {
-    color: #690;
+.token.selector { color: #690; }
+.token.property { color: #905; }
+.token.function { color: #DD4A68; }
+.token.punctuation { color: #999; }
+
+/* 字太小了，放大一点 */
+#code {
+    font-size: 16px;
+    transform: translateX(40px);
 }
-.token.property {
-    color: #905;
-}
-.token.function {
-    color: #DD4A68;
-}
-.token.punctuation {
-    color: #999;
+#main {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    grid-template-rows: auto auto;
 }
 
-/* 加点 3D 效果 */
-#code {
-    transform: rotate(360deg);
-}
+/* 
+* 好了下面我正式开始介绍我自己
+* 我需要一张纸
+*/
 
-/* 好了下面我正式开始介绍我自己 */
-/* 我需要一张白纸 */
 #code {
-    position: fixed;
-    left: 0;
-    width: 50%;
-    height: 100%;
+    grid-column: 1;
+    grid-row: 1;
 }
 #paper {
-    position: fixed;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    background: rgb(222,222,222);
-    display: flex;
+    grid-column: 2;
+    grid-row: 1;
     justify-content: center;
-    align-items: center;
-    padding: 20px;
+    align-content: center;
+    margin: 24px;
 }
 #paper > .content{
-    width: 100%;
     height: 100%;
+    width: 100%;
     background: white;
 }
+
+/*
+* 准备好了，现在请看左边 
+*/
 `
 var result2 = `
 #paper {
@@ -106,10 +104,21 @@ var result3 = `
 /* 
 * 接下来把 markdown 变成 html 
 */
+
 /*
 * 接下来给 html 加个样式吧
 */
+#paper > .content{
+    background: #b0eff1; 
+}
+#paper > pre{
+    padding: 24px 0 0 24px;
+}
 
+/*
+* 好了，我的动态简历就演示到这里了
+* 谢谢观看
+*/
 `
 
 var md = `
@@ -165,12 +174,12 @@ function createPaper(fn) {
     var content = document.createElement('pre')
     content.className = 'content'
     paper.appendChild(content)
-    document.body.appendChild(paper)
-    fn.call()
+    main.appendChild(paper)
+    fn&&fn.call()
 }
 
-function markdownToHtml(markdown, fn) {
+function markdownToHtml(markdown,fn) {
     let domPaper = document.querySelector('#paper > .content')
     domPaper.innerHTML = marked(markdown)
-    fn.call()
+    fn&&fn.call()    
 }
