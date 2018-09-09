@@ -1,21 +1,42 @@
 // 传入三个参数，第一个是已完成的页面，第二个是页面内容，第三个是回调函数
+var duration = 50
 function writeCode(prefix, code, fn) {
     let domCode = document.querySelector('#code')
+    let styleTag = document.querySelector('#styleTag')
     let n = 0
-    let id = setInterval(() => {
+    let id
+    id = setTimeout(function run() {
         n += 1
         // 也可以用 code.slice()
         domCode.innerHTML = Prism.highlight(prefix + code.substring(0, n), Prism.languages.css)
         styleTag.innerHTML = prefix + code.substring(0, n)
         // 每次更新屏幕下拉,也可以 = 10000
         domCode.scrollTop = domCode.scrollHeight
-        if (n >= code.length) {
-            window.clearInterval(id)
+        if (n < code.length) {
+            id = setTimeout(run, duration)
             // call一下
-            fn&&fn.call()
+        } else {
+            fn && fn.call()
         }
-    }, 10)
+    }, duration)
 }
+$('.actions').on('click', 'button', function (e) {
+    let $button = $(e.currentTarget)
+    let speed = $button.attr('data-speed')
+    $button.addClass('active')
+        .siblings('.active').removeClass('active')
+    switch(speed){
+        case 'slow':
+            duration = 100
+        break
+        case 'normal':
+            duration = 50
+        break
+        case 'fast':
+            duration = 10
+        break
+    }
+})
 
 function writeMarkdown(markdown, fn) {
     let domPaper = document.querySelector('#paper > .content')
@@ -29,9 +50,9 @@ function writeMarkdown(markdown, fn) {
         if (n >= markdown.length) {
             window.clearInterval(id)
             // call一下
-            fn&&fn.call()
+            fn && fn.call()
         }
-    }, 1)
+    }, 50)
 }
 
 var result = `/* 
@@ -46,7 +67,7 @@ var result = `/*
     transition: all 1s;
 }
 body {
-    background: linear-gradient(to left,white, blue, white);
+    background: linear-gradient(to left, white, #b0ffcf);
 }
 #code {
     padding: 24px;
@@ -62,12 +83,11 @@ body {
 /* 字太小了，放大一点 */
 #code {
     font-size: 16px;
-    transform: translateX(40px);
 }
 #main {
     display: grid;
-    grid-template-columns: 40% 60%;
-    grid-template-rows: auto auto;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
 }
 
 /* 
@@ -84,7 +104,7 @@ body {
     grid-row: 1;
     justify-content: center;
     align-content: center;
-    margin: 24px;
+    margin: 24px 0;
 }
 #paper > .content{
     height: 100%;
@@ -175,11 +195,11 @@ function createPaper(fn) {
     content.className = 'content'
     paper.appendChild(content)
     main.appendChild(paper)
-    fn&&fn.call()
+    fn && fn.call()
 }
 
-function markdownToHtml(markdown,fn) {
+function markdownToHtml(markdown, fn) {
     let domPaper = document.querySelector('#paper > .content')
     domPaper.innerHTML = marked(markdown)
-    fn&&fn.call()    
+    fn && fn.call()
 }
