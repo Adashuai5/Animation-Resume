@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box
+    box-sizing: border-box;
 }
 
 .token.selector {
@@ -25,3 +25,29 @@
     overflow: hidden;
 }
 
+.wrapper-code {
+    position: relative;
+}
+
+.actions {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.actions>button {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    margin: 10px;
+    transition: all 0.5s;
+}
+
+.actions>.active {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8)
+}
+
+.actions>button:focus {
+    outline: none;
+}
