@@ -87,10 +87,7 @@ body {
 #main {
     display: grid;
     grid-template-columns: 50% 50%;
-<<<<<<< HEAD
-=======
     grid-template-rows: auto;
->>>>>>> 52ee8d187662d5b82016cba4a962b9249071b9bf
 }
 
 /* 
